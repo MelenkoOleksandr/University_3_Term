@@ -21,7 +21,9 @@ class ThreadWarrior extends  Thread {
         while (!interrupted()) {
             if (count >= bound && ((slider.getValue() > 10 && increment < 0) || (slider.getValue() < 90 && increment > 0))){
                 setPriority((int) threadWarriorPower.getValue());
-                slider.setValue(slider.getValue() + this.increment);
+                synchronized (slider) {
+                    slider.setValue(slider.getValue() + this.increment);
+                }
                 count = 0;
             }
             count++;
@@ -65,10 +67,10 @@ public class Lab1a {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                synchronized (slider) {
-                    warriorDecrease.start();
-                    warriorIncrease.start();
-                }
+                warriorDecrease.setDaemon(true);
+                warriorIncrease.setDaemon(true);
+                warriorDecrease.start();
+                warriorIncrease.start();
             }
         });
 

@@ -10,11 +10,19 @@ def calcArea(dots)
       sum += (currentDot[0] + dots[index + 1][0]) * ( currentDot[1] - dots[index + 1][1])
     end
   end
-  return sum.abs.to_f / 2
+  sum.abs.to_f / 2
 end
 
+def diap(t, r, p)
+  (p ** r) * (1 - p ** (-t)).to_f.round
+end
 
-triangleExample = [[1, 1], [4, 2], [5, 3]]
+def binary_translator(num, i=0)
+  product = num % 10 * 2**i
+  return product if num < 1
+  product + binary_translator(num/10, i+1)
+end
+
 dots = [
   [514, 19], [515, 56], [506, 107], [492, 154], [386, 186],
   [314, 185], [283, 234], [205, 233], [134, 220], [78, 202],
@@ -24,5 +32,7 @@ dots = [
   [397, 16], [443, 26], [468, 39], [488, 32]
 ]
 
-puts "The area of test triangle in example: #{calcArea(triangleExample)}"
-puts "The area of given polygon is #{calcArea(dots)}"
+puts "Task1: #{calcArea(dots)}"
+puts "Task 2:  #{diap(15, 8, 4)}"
+puts "Task 3 #{binary_translator(1111100011001)}"
+puts "Task 4: #{332.to_s(2)}";

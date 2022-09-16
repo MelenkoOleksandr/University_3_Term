@@ -1,11 +1,12 @@
 package Main;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 public class Lab1b {
     public static boolean semaphore = false;
+    private static Object sync = new Object();
 
     public static void main(String[] args) {
         JFrame frame = new JFrame();
@@ -33,37 +34,38 @@ public class Lab1b {
         panel.add(buttonStop2);
         panel.add(label);
 
-        ThreadSenaphore thread1 = new ThreadSenaphore(slider, 1, 90);
-        ThreadSenaphore thread2 = new ThreadSenaphore(slider, -1, 10);
-        thread1.start();
-        thread2.start();
+        AtomicReference<ThreadSenaphore> thread1 = new AtomicReference<>(new ThreadSenaphore(slider, 1, 90));
+        AtomicReference<ThreadSenaphore> thread2 = new AtomicReference<>(new ThreadSenaphore(slider, -1, 10));
+
         buttonStart1.addActionListener((ActionEvent e) -> {
             if (!semaphore) {
+                thread1.set(new ThreadSenaphore(slider, 1, 90));
+                thread1.get().setPriority(Thread.MIN_PRIORITY);
+                thread1.get().start();
                 semaphore = true;
-                thread1.setPriority(Thread.MIN_PRIORITY);
-                thread1.setIsWorking(semaphore);
                 label.setText("Зайнято");
             }
         });
 
         buttonStart2.addActionListener((ActionEvent e) -> {
             if (!semaphore) {
+                thread2.set(new ThreadSenaphore(slider, -1, 10));
+                thread2.get().setPriority(Thread.MAX_PRIORITY);
+                thread2.get().start();
                 semaphore = true;
-                thread2.setPriority(Thread.MAX_PRIORITY);
-                thread2.setIsWorking(semaphore);
                 label.setText("Зайнято");
             };
         });
 
         buttonStop1.addActionListener((ActionEvent e) -> {
+            thread1.get().interrupt();
             semaphore = false;
-            thread1.setIsWorking(semaphore);
             label.setText("Вільно");
         });
 
         buttonStop2.addActionListener((ActionEvent e) -> {
+            thread2.get().interrupt();
             semaphore = false;
-            thread2.setIsWorking(semaphore);
             label.setText("Вільно");
         });
 
@@ -76,7 +78,6 @@ class ThreadSenaphore extends Thread {
     JSlider slider;
     private int increment = 0;
     private int limit = 0;
-    private boolean isWorking = false;
 
     public ThreadSenaphore(JSlider slider, int increment, int limit) {
         this.slider = slider;
@@ -84,14 +85,10 @@ class ThreadSenaphore extends Thread {
         this.limit = limit;
     }
 
-    public void setIsWorking(boolean isWorking) {
-        this.isWorking = isWorking;
-    }
-
     @Override
     public void run() {
-        while (!interrupted()) {
-            if (isWorking) {
+        synchronized (slider) {
+            while (!interrupted()) {
                 int currentValue =  slider.getValue();
                 if (increment < 0 && limit < currentValue) {
                     slider.setValue(currentValue + increment);
