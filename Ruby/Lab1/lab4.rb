@@ -1,6 +1,7 @@
 # Варіант 7
-# https://www.techotopia.com/index.php/Advanced_Ruby_Arrays#Intersection.2C_Union_and_Difference
+require 'matrix'
 
+LENGTH = 8
 def printArray(array)
   print "Array: "
   array.each { |value| print "#{value} " }
@@ -8,9 +9,8 @@ def printArray(array)
 end
 
 def fillArray(array)
-  14.times do |index|
-    puts "Input array[#{index}]"
-    user_input = gets.chop.to_i
+  LENGTH.times do |index|
+    user_input = rand(10)
     array[index] = user_input
   end
 end
@@ -21,14 +21,61 @@ A = []
 puts "Fill array C:"
 C = []
 
+
 fillArray(A)
 fillArray(C)
+
+
+A = A + A
+C = C + C
 
 printArray(A)
 printArray(C)
 
-B = A & C
-puts "Result:"
+B = []
+
+for i in 1..LENGTH
+  B.push(A[i] * C[i + 1] - A[LENGTH - 2 + i] * C[LENGTH - 3 +i])
+end
+
 printArray(B)
 
+puts "Enter the amount of rows and columns: 3 <= Length <= 9"
+len = gets.chop.to_i
+puts "Enter k"
+k = gets.chop.to_i
+matrix = []
+b = []
 
+#Filling the main matrix
+for i in 0..len - 1
+  for j in 0..len - 1
+    if i == j
+      matrix[i][j] = 2
+    else
+      matrix[i][j] = k + 2
+    end
+  end
+end
+
+#Filling b matrix
+for i in 0..len - 1
+  b[i] = i + 1
+end
+
+for i in 0..len - 1
+  elem = matrix[i][i]
+  #divide row by the diagonal element
+  for j in 0..len - 1
+    elem[i][j] /= elem
+  end
+  b[i] /= elem
+
+  #subtract from rows
+  for j in (i + 1)..len - 1
+    for k in 0..len-1
+      matrix[j][k] = matrix[i][k]
+    end
+
+  end
+end

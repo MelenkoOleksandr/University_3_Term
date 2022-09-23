@@ -24,6 +24,7 @@ public class HalfDivision {
                     a = x;
                 }
             }
+            System.out.println("F(x) " + Function.f(x));
             System.out.println("X = " + x);
             System.out.println("Amount of iterations k= " + k);
         } else {
