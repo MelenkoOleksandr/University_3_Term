@@ -37,7 +37,10 @@ extr = zeros(2,1);
 for j = 3:round(N/2)-1
     if(fourier_func(j) > fourier_func(j+1) && fourier_func(j) > fourier_func(j-1) && abs(fourier_func(j)-fourier_func(j+1)) > 1)
         counter = counter + 1;
-        extr(counter) = j*delta_f
+        if (j*delta_f ~= 0) 
+             extr(counter) = j*delta_f;
+        end
+      
     end
 end
 
@@ -53,8 +56,8 @@ A = [sum(t.^6), sum(t.^5), sum(t.^4), sum(f_sin.*t.^3), sum(t.^3);
 
 c = [sum(y.*t.^3), sum(y.*t.^2), sum(y.*t), sum(y.*f_sin),  sum(y)];
 
-a = inv(A)*c'
-temp = a'
+a = inv(A)*c';
+temp = a';
 
 % Отримана апроксимуюча функція
 aprox_f = a(1).*t.^3 + a(2).*t.^2 + a(3).*t + a(4).*f_sin +a(5);
@@ -64,4 +67,4 @@ figure
 plot(t, aprox_f), grid
 
 % Середньоквадратична похибка
-error_value = sum((aprox_f-y).^2)
+error_value = sum((aprox_f-y).^2);
