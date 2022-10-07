@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xsd:element name="Devices">
+        <xsd:complexType>
+            <xs:sequence>
+                <xsd:element name="Device" minOccurs="1" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="ID" type="xsd:ID"/>
+                            <xsd:element name="Name" type="xsd:string" />
+                            <xsd:element name="Origin" type="xsd:string" />
+                            <xsd:element name="Price" >
+                                <xsd:simpleType>
+                                    <xsd:restriction base="xsd:int">
+                                        <xsd:minInclusive value="0"/>
+                                    </xsd:restriction>
+                                </xsd:simpleType>
+                            </xsd:element>
+                            <xsd:element name="Critical" type="xsd:boolean" />
+
+                            <xsd:element name="Types">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xs:element name="Peripheral" type="xs:boolean"/>
+                                        <xs:element name="EnergyConsumption">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:int">
+                                                    <xs:minInclusive value="0"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                        <xs:element name="Cooler" type="xs:boolean"/>
+                                        <xs:element name="ComponentGroup" type="xs:string"/>
+                                        <xs:element name="Port">
+                                            <xsd:simpleType>
+                                                <xsd:restriction base="xsd:string">
+                                                    <xsd:enumeration value="COM" />
+                                                    <xsd:enumeration value="USB" />
+                                                    <xsd:enumeration value="LPT" />
+                                                </xsd:restriction>
+                                            </xsd:simpleType>
+                                        </xs:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xs:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

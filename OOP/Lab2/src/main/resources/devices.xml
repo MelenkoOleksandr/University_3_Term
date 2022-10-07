@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Devices>
+    <Device>
+        <ID>1</ID>
+        <Name>Device1</Name>
+        <Origin>USA</Origin>
+        <Price>500</Price>
+        <Critical>false</Critical>
+        <Types>
+            <Peripheral>true</Peripheral>
+            <EnergyConsumption>20</EnergyConsumption>
+            <Cooler>true</Cooler>
+            <ComponentGroup>Multimedia</ComponentGroup>
+            <Port>USB</Port>
+        </Types>
+    </Device>
+</Devices>

@@ -1,56 +1,78 @@
 package C;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Main {
-    RWLock rwLock = new RWLock();
+    public static void main(String[] args) {
+        RWLock rwLock = new RWLock();
+        BusFlights busFlights = new BusFlights();
 
-    Thread thread1 = new Thread(() -> {
-        while (!Thread.interrupted()) {
-            try {
-                rwLock.lockWrite();
+//    Thread thread1 = new Thread(() -> {
+//        while (!Thread.interrupted()) {
+//            try {
+//                rwLock.lockWrite();
+//
+//                rwLock.unlockWrite();
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//
+//        }
+//    });
 
-                rwLock.unlockWrite();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+        Thread thread2 = new Thread(() -> {
+            while (!Thread.interrupted()) {
+                try {
+                    rwLock.lockRead();
+
+                    boolean add = new Random().nextBoolean();
+                    if (add) {
+                        busFlights.addRoad();
+                    } else {
+                        busFlights.deleteRoad();
+                    }
+
+                    rwLock.unlockRead();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
+        });
 
-        }
-    });
+        Thread thread3 = new Thread(() -> {
+            while (!Thread.interrupted()) {
+                try {
 
-    Thread thread2 = new Thread(() -> {
-        while (!Thread.interrupted()) {
-            try {
-                rwLock.lockWrite();
+                    rwLock.lockWrite();
+                    boolean add = new Random().nextBoolean();
+                    if (add) {
+                        busFlights.addCity();
+                    } else {
+                        busFlights.deleteCity();
+                    }
+                    rwLock.unlockWrite();
 
-                rwLock.unlockWrite();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        }
-    });
+        });
 
-    Thread thread3 = new Thread(() -> {
-        while (!Thread.interrupted()) {
-            try {
-                rwLock.lockWrite();
+//    Thread thread4 = new Thread(() -> {
+//        while (!Thread.interrupted()) {
+//            try {
+//                rwLock.lockWrite();
+//
+//                rwLock.unlockWrite();
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }
+//    });
 
-                rwLock.unlockWrite();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    });
+        thread2.start();
+        thread3.start();
+    }
 
-    Thread thread4 = new Thread(() -> {
-        while (!Thread.interrupted()) {
-            try {
-                rwLock.lockWrite();
-
-                rwLock.unlockWrite();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    });
 }
