@@ -1,6 +1,7 @@
-import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
+import java.io.*;
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Manager {
     final PipedOutputStream f_output;
@@ -8,63 +9,69 @@ public class Manager {
     final PipedInputStream f_input;
     final PipedInputStream g_input;
 
-    public Manager() throws IOException {
-        f_output = new PipedOutputStream();
-        g_output = new PipedOutputStream();
-        f_input = new PipedInputStream(f_output);
-        g_input = new PipedInputStream(g_output);
+    public Manager()  {
+        try {
+            f_output = new PipedOutputStream();
+            g_output = new PipedOutputStream();
+            f_input = new PipedInputStream(f_output);
+            g_input = new PipedInputStream(g_output);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void showModal() {
+        System.out.println("(a) continue");
+        System.out.println("(b) continue without prompt");
+        System.out.println("(c) stop");
+    }
+
+    public StringBuilder getPipeResult(char pipe) throws IOException {
+        StringBuilder result = new StringBuilder();
+        int currentByte = pipe == 'F' ? f_input.read() : g_input.read();
+        while (currentByte != -1) {
+            result.append((char)currentByte);
+            currentByte = pipe == 'F' ? f_input.read() : g_input.read();
+        }
+        System.out.println(pipe + " result: " + result);
+        return result;
     }
 
     public void initialize() {
-        Thread threadFListener = new Thread(() -> {
-            try {
-                while (true) {
-                    f_output.write((int) (Math.random() * 10));
+        try {
+            int x = 1;
+            Thread fThread = new Thread(new Worker(f_output, x, 'F'));
+            Thread gThread = new Thread(new Worker(g_output, x, 'G'));
+
+            fThread.start();
+            gThread.start();
+
+            StringBuilder fResult = getPipeResult('F');
+            StringBuilder gResult = getPipeResult('G');
+
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    while (true) {
+                        if (fResult.isEmpty() || gResult.isEmpty()) {
+                            showModal();
+                            Scanner scanner = new Scanner(System.in);
+                            System.out.println(scanner.nextLine());
+                        }
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
+            };
 
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+            Timer timer = new Timer();
+            timer.schedule(task, 5000);
+            System.out.println("Result: " + (Integer.parseInt(fResult.toString()) + Integer.parseInt(gResult.toString())));
+        } catch (IOException exception) {
 
-        Thread threadGListener = new Thread(() -> {
-            try {
-                while (true) {
-                    g_output.write((int) (Math.random() * 10));
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        Thread threadFWriter = new Thread(() -> {
-            try {
-                int data = f_input.read();
-                while (data != -1) {
-                    System.out.println("F  Writer: " + data);
-                    data = f_input.read();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-        });
-
-        Thread threadGWriter = new Thread(() -> {
-            try {
-                int data = g_input.read();
-                while (data != -1) {
-                    System.out.println("G  Writer: " + data);
-                    data = g_input.read();
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        threadFListener.start();
-        threadFWriter.start();
-        threadGListener.start();
-        threadGWriter.start();
+        }
     }
 }
