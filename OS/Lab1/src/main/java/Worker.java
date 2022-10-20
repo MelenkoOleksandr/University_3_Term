@@ -1,26 +1,18 @@
 
 
-import os.lab1.compfuncs.basic.IntOps;
+import os.lab1.compfuncs.advanced.IntOps;
 
 import java.io.IOException;
 import java.io.PipedOutputStream;
 import java.util.Optional;
+import java.util.concurrent.*;
 
-//class IntOps {
-//    public static Optional<Integer> trialF(Integer x){
-//        return Optional.of(x - 2);
-//    }
-//
-//    public static Optional<Integer> trialG(Integer x){
-//        return Optional.of(x * (x - 1));
-//    }
-//}
 
-public class Worker implements Runnable {
+public class Worker extends Thread {
     int argument;
     PipedOutputStream writerPipe;
     char funcName;
-    Optional<Integer> result;
+
 
     public Worker(PipedOutputStream writerPipe, int argument, char funcName) {
         this.argument = argument;
@@ -29,20 +21,38 @@ public class Worker implements Runnable {
     }
 
     @Override
-    public void run() {
-        try {
-            result = funcName == 'F' ? IntOps.trialF(argument) : IntOps.trialG(argument);
-            if (result.isPresent()) {
-//                System.out.println(funcName == 'F' ? "F Result: " + result.get() : "G Result: " + result.get());
-                writerPipe.write(result.get().toString().getBytes());
-                writerPipe.close();
-            } else {
-                writerPipe.write("-1".getBytes());
+    public void run()  {
+
+            try {
+                ExecutorService executorCompletionService = Executors.newSingleThreadExecutor();
+                Future<Optional<Optional<Integer>>> future = executorCompletionService.submit(() -> funcName == 'F' ? IntOps.trialF(argument) : IntOps.trialG(argument));
+                Optional<Optional<Integer>> result;
+                try {
+                    result = future.get(10000, TimeUnit.MILLISECONDS);
+                    if (result.isPresent()) {
+                        if (result.get().isPresent()) {
+                            // Computed Values
+                            writerPipe.write(result.get().get().toString().getBytes());
+                            writerPipe.close();
+                        } else {
+                            // Hard Fail
+                            writerPipe.write("Hard Fail".getBytes());
+                            writerPipe.close();
+                        }
+                    } else {
+                        // Soft Fail
+                        writerPipe.write("Soft Fail".getBytes());
+                        writerPipe.close();
+                    }
+                } catch (ExecutionException | TimeoutException e) {
+                    writerPipe.write("Timeout".getBytes());
+                    writerPipe.close();
+                }
+            } catch (IOException | InterruptedException e) {
+                System.out.println("ERROR");
+                throw new RuntimeException(e);
             }
-//            Thread.sleep(1000);
-        } catch (IOException | InterruptedException e) {
-            System.out.println("ERROR");
-            throw new RuntimeException(e);
-        }
+
+
     }
 }
