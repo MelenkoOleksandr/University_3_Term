@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="Windows-1251" standalone="no"?>
+<!DOCTYPE Grocery SYSTEM "grocery.dtd">
+<Grocery>
+    <ProductCategory categoryName="Meat" id="1">
+        <Product amount="120" id="1" price="5" productName="Chicken"/>
+        <Product amount="120" id="2" price="5" productName="Cow"/>
+    </ProductCategory>
+    <ProductCategory categoryName="Fruits" id="2">
+        <Product amount="80" id="3" price="50" productName="Banana"/>
+        <Product amount="20" id="4" price="100" productName="Apple"/>
+        <Product amount="100" id="5" price="30" productName="Orange"/>
+    </ProductCategory>
+    <ProductCategory categoryName="Vegetables" id="3">
+        <Product amount="40" id="6" price="1000" productName="Potato"/>
+        <Product amount="35" id="7" price="200" productName="Carrot"/>
+    </ProductCategory>
+</Grocery>
