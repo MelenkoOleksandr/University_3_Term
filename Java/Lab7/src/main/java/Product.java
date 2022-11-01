@@ -1,3 +1,5 @@
+package groceryXML;
+
 public class Product {
     public int productCode;
     public String productName;
@@ -40,6 +42,6 @@ public class Product {
     }
 
     public String toString() {
-        return "Product Code: " + productCode + ", Product Name: " + productName + ", Amount: " + amount + ", Price: " + price;
+        return "groceryXML.Product Code: " + productCode + ", groceryXML.Product Name: " + productName + ", Amount: " + amount + ", Price: " + price;
     }
 }

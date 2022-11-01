@@ -1,3 +1,5 @@
+package groceryXML;
+
 import java.util.ArrayList;
 
 public class ProductCategory {
