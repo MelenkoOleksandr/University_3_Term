@@ -50,6 +50,8 @@ public class Seidel {
     public static void main(String[] args) throws InterruptedException {
         double[][] A = {{5, -1, 2}, {3, 8, -2}, {1, 1, 4}};
         double[] b = {12, -25, 6};
+//        double[][] A = {{0.341, -0.542, 0.418, -2.11}, {-0.111, 0.915, 0.012, 0.341}, {0.546, 0.211, -0.318, 1.81}, {0.302, 0.201, 2.13, -0.115}};
+//        double[] b = {-1.893, 2.249, 2.249, 2.518};
         method(A, b, 0.001);
     }
 }

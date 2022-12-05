@@ -1,2 +1,7 @@
-package devices;public class PortTypes {
+package devices;
+
+public enum PortTypes {
+    USB,
+    COM,
+    LPT
 }

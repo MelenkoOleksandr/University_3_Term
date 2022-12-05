@@ -6,7 +6,10 @@ public class Device {
     private String origin;
     private Integer price;
     private Boolean critical;
-    private DeviceTypes types;
+    private DeviceTypes types = new DeviceTypes();
+
+    public Device() {
+    }
 
     public Device(String id, String name, String origin, Integer price, Boolean critical, DeviceTypes types) {
         this.id = id;
@@ -15,6 +18,36 @@ public class Device {
         this.price = price;
         this.critical = critical;
         this.types = types;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!Device.class.isAssignableFrom(obj.getClass())) {
+            return false;
+        }
+        final Device other = (Device) obj;
+        if ((id == null) || (other.id != null) && !id.equals(other.id)) {
+            return false;
+        }
+        if ((name == null) || (other.name != null) && !name.equals(other.name)) {
+            return false;
+        }
+        if ((origin == null) || (other.origin != null) && !origin.equals(other.origin)) {
+            return false;
+        }
+        if (price != other.price && (price == null || !price.equals(other.price))) {
+            return false;
+        }
+        if (critical != other.critical && (critical == null || !critical.equals(other.critical))) {
+            return false;
+        }
+        if (types != other.types && (types == null || !types.equals(other.types))) {
+            return false;
+        }
+        return true;
     }
 
     public String getName() {
@@ -63,5 +96,10 @@ public class Device {
 
     public void setTypes(DeviceTypes types) {
         this.types = types;
+    }
+
+    @Override
+    public String toString() {
+        return "Device{" + "id=" + id + ", name=" + name + ", origin=" + origin + ", price=" + price + ", critical=" + critical + ", types=" + types + '}';
     }
 }

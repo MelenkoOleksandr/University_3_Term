@@ -13,5 +13,18 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-    
+
+    <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.24</version>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm.mq</groupId>
+            <artifactId>com.ibm.mq.allclient</artifactId>
+            <version>9.2.5.0</version>
+        </dependency>
+    </dependencies>
+
 </project>
